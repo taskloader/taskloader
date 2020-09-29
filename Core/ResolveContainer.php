@@ -1,9 +1,9 @@
-<?php namespace TaskFiber\Service;
+<?php namespace TaskFiber\Core;
 
-use ServiceException as Exception;
+use \TaskFiber\FiberException as Exception;
 use \ReflectionClass, \ReflectionParameter;
 
-class ServiceResolver {
+class ResolveContainer {
 	private array $resolve = [];
 
 
@@ -17,7 +17,7 @@ class ServiceResolver {
 		// Check if we need to resolve a different class
 		$this->resolveClass($class);
 
-		$reflector = new \ReflectionClass( $class );
+		$reflector = new ReflectionClass( $class );
 
 		if ( ! $reflector->isInstantiable() )
 			throw Exception::badMethodCall("$class is not instantiable");
@@ -29,7 +29,7 @@ class ServiceResolver {
 			return new $class;
 
 		$parameters = $constructor->getParameters();
-		$dependencies = $this->getDependancies( $parameters );
+		$dependencies = $this->getDependencies( $parameters );
 
 		return $reflector->newInstanceArgs( $dependencies );
 	}

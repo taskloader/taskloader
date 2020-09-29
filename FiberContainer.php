@@ -1,8 +1,8 @@
 <?php namespace TaskFiber;
 use FiberException as Exception;
-use TaskFiber\Service\ServiceContainer;
-use TaskFiber\Service\ServiceProvider;
-use TaskFiber\Resolve\ResolveContainer;
+use TaskFiber\Core\ServiceContainer;
+use TaskFiber\Core\ServiceProvider;
+use TaskFiber\Core\ResolveContainer;
 
 class FiberContainer {
 	private ServiceContainer $service;

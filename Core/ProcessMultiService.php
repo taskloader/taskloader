@@ -1,7 +1,7 @@
 <?php
-namespace TaskFiber\Service;
+namespace TaskFiber\Core;
 
-class MultiServiceProcess extends ServiceProcess {
+class ProcessMultiService extends Process {
 	private $instance;
 	
 	public function process()

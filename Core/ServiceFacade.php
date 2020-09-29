@@ -1,4 +1,4 @@
-<?php namespace TaskFiber\Service;
+<?php namespace TaskFiber\Core;
 
 
 abstract class ServiceFacade {

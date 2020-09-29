@@ -1,9 +1,9 @@
-<?php namespace TaskFiber\Resolve;
+<?php namespace TaskFiber\Core;
 
 use ServiceException as Exception;
 use \ReflectionClass, \ReflectionParameter;
 
-class ResolveContainer {
+class ServiceResolver {
 	private array $resolve = [];
 
 

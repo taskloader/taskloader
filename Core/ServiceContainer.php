@@ -1,14 +1,13 @@
-<?php namespace TaskFiber\Service;
+<?php namespace TaskFiber\Core;
 
-use \TaskFiber\Resolve\ResolveContainer as Resolver;
-use \TaskFiber\Service\ServiceException as Exception;
+use \TaskFiber\Core\ServiceException as Exception;
 
 
 class ServiceContainer {
 	private array $services = [];
-	private Resolver $resolver;
+	private ResolveContainer $resolver;
 
-	public function __construct( Resolver &$resolver )
+	public function __construct( ResolveContainer &$resolver )
 	{
 		$this->resolver = $resolver;
 	}
@@ -19,9 +18,9 @@ class ServiceContainer {
 	 * @param      string  $name   The name
 	 * @param      string  $class  The class
 	 */
-	public function bindService( string $name, string $class ) : ServiceProcess
+	public function bindService( string $name, string $class ) : Process
 	{
-		return $this->addService($name, new SingleServiceProcess($this->resolver, $class));
+		return $this->addService($name, new ProcessSingleService($this->resolver, $class));
 	}
 
 
@@ -31,7 +30,7 @@ class ServiceContainer {
 	 * @param      string  $name   The name
 	 * @param      string  $class  The class
 	 */
-	public function bind( string $name, string $class ) : ServiceProcess
+	public function bind( string $name, string $class ) : Process
 	{
 		return $this->bindService($name, $class);
 	}
@@ -44,9 +43,9 @@ class ServiceContainer {
 	 * @param      string  $name   The name
 	 * @param      string  $class  The class
 	 */
-	public function attachService( string $name, string $class ) : ServiceProcess
+	public function attachService( string $name, string $class ) : Process
 	{
-		return $this->addService($name, new MultiServiceProcess($this->resolver, $class));
+		return $this->addService($name, new ProcessMultiService($this->resolver, $class));
 	}
 
 
@@ -57,14 +56,14 @@ class ServiceContainer {
 	 * @param      string  $name   The name
 	 * @param      string  $class  The class
 	 */
-	public function attach( string $name, string $class ) : ServiceProcess
+	public function attach( string $name, string $class ) : Process
 	{
 		return $this->attachService($name, $class);
 	}
 
 
 
-	public function addService( string $name, ServiceProcess $process ) : ServiceProcess
+	public function addService( string $name, Process $process ) : Process
 	{
 		$this->services[$name] = $process;
 

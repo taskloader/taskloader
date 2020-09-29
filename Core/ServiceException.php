@@ -1,4 +1,4 @@
-<?php namespace TaskFiber\Service;
+<?php namespace TaskFiber\Core;
 
 use \TaskFiber\FiberException;
 
