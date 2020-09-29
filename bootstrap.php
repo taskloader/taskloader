@@ -16,8 +16,8 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
 class_alias('TaskFiber\Fiber', 'Fiber');
-Fiber::alias('Service\ServiceProvider', 'Service');
-Fiber::alias('Service\ServiceFacade', 'Facade');
+Fiber::alias('Core\ServiceProvider', 'Service');
+Fiber::alias('Core\ServiceFacade', 'Facade');
 
 //Fiber::init();
 Fiber::bind('config', 'Config');
@@ -26,40 +26,7 @@ Fiber::bind('session', 'Session');
 Fiber::bind('auth', 'Authenticate');
 Fiber::attach('query', 'Query');
 
-class TemporaryConfig extends Service {
-	public $count = 0;
 
-	public function instance()
-	{
-		return $this;
-	}
-
-
-	public function plus()
-	{
-		$this->count++;
-	}
-
-	public function invoke()
-	{
-		echo "I am a router";
-	}
-}
 Fiber::resolve('Config', 'TemporaryConfig');
-Fiber::resolve('Query', 'TemporaryConfig');
-
-Fiber::service('config')->plus();
-
-class Config extends Facade {}
-
-
-$config = Config::instance();
-$config->plus();
-
-echo $config->count;
-
-
-Fiber::service('query')->plus();
-$query = Fiber::service('query');
-$query->plus();
-echo $query->count;
+Fiber::resolve('Query', 'ServiceClass');
+Fiber::resolve('Injectable', 'Override');
