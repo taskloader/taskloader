@@ -42,7 +42,7 @@ class Fiber {
 	 */
 	public static function __callStatic( string $method, array $arguments )
 	{
-		if ( ! method_exists(self::instance(), $method) )
+		if ( ! is_callable([self::instance(), $method]) )
 			throw SorryInvalidFiber::method(static::class, $method);
 
 		return call_user_func_array([self::instance(), $method], $arguments);
