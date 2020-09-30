@@ -7,7 +7,8 @@ class ServiceContainer implements ContainerInterface {
 
 	public function __construct()
 	{
-		$this->services['resolve'] = new ResolveContainer();
+		$this->services['service'] = $this;
+		$this->services['resolve'] = new ResolveContainer($this);
 	}
 
 
