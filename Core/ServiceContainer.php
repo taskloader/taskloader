@@ -1,73 +1,35 @@
 <?php namespace TaskFiber\Core;
 
-use \TaskFiber\Core\ServiceException as Exception;
 
 
-class ServiceContainer {
+class ServiceContainer implements ContainerInterface {
 	private array $services = [];
-	private ResolveContainer $resolver;
 
-	public function __construct( ResolveContainer &$resolver )
+	public function __construct()
 	{
-		$this->resolver = $resolver;
-	}
-
-	/**
-	 * Adds a singleton instance to takslist
-	 *
-	 * @param      string  $name   The name
-	 * @param      string  $class  The class
-	 */
-	public function bindService( string $name, string $class ) : Process
-	{
-		return $this->addService($name, new ProcessSingleService($this->resolver, $class));
+		$this->services['resolve'] = new ResolveContainer();
 	}
 
 
 	/**
-	 * Alias to bindService
+	 * Adds a service provider.
 	 *
-	 * @param      string  $name   The name
-	 * @param      string  $class  The class
+	 * @param      string           $name     The name
+	 * @param      ProcessProvider  $process  The process
+	 *
+	 * @return     ProcessProvider  The process provider.
 	 */
-	public function bind( string $name, string $class ) : Process
+	public function addService( string $name, string $class ) : void
 	{
-		return $this->bindService($name, $class);
+		$this->services[$name] = $class;
 	}
-
-
 
 	/**
-	 * Adds a multi instance to servicelist
-	 *
-	 * @param      string  $name   The name
-	 * @param      string  $class  The class
+	 * Alias to addService
 	 */
-	public function attachService( string $name, string $class ) : Process
+	public function add( string $name, $value )
 	{
-		return $this->addService($name, new ProcessMultiService($this->resolver, $class));
-	}
-
-
-
-	/**
-	 * Alias to attachService
-	 *
-	 * @param      string  $name   The name
-	 * @param      string  $class  The class
-	 */
-	public function attach( string $name, string $class ) : Process
-	{
-		return $this->attachService($name, $class);
-	}
-
-
-
-	public function addService( string $name, Process $process ) : Process
-	{
-		$this->services[$name] = $process;
-
-		return $process;
+		return $this->addService(...func_get_args());
 	}
 
 
@@ -75,27 +37,53 @@ class ServiceContainer {
 	/**
 	 * Get a service instance from service list
 	 *
-	 * @param      string    $name     The name
-	 * @param      ServiceProcess  $process  The process
+	 * @param      string           $service  The service
+	 */
+	public function getService( string $service )
+	{
+		if ( ! $this->has($service) )
+			throw SorryInvalidService::name($service);
+
+		$service = &$this->services[$service];
+
+		if ( gettype($service) == 'string' )
+			$service = $this->get('resolve')->get($service);
+
+		return $service;
+	}
+
+	/**
+	 * Alias to getService
 	 */
 	public function get( string $name )
 	{
-		if ( ! $this->has($name) )
-			throw Exception::invalidService($name);
-
-		return $this->services[$name]->process();
+		return $this->getService(...func_get_args());
 	}
 
 
-	public function has( string $service ) : bool
+
+	/**
+	 * Determines if service is registered.
+	 *
+	 * @param      string   $service  The service
+	 *
+	 * @return     boolean  True if service, False otherwise.
+	 */
+	public function hasService( string $service ) : bool
 	{
 		return array_key_exists($service, $this->services);
 	}
 
-
-	public function resolve( string $class, string $replace ) : void
+	/**
+	 * alias to hasService
+	 *
+	 * @param      string   $service  The service
+	 *
+	 * @return     boolean  Service registered
+	 */
+	public function has( string $name ) : bool
 	{
-		$this->resolver->register($class, $replace);
+		return $this->hasService(...func_get_args());
 	}
 
 

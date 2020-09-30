@@ -2,15 +2,21 @@
 
 
 abstract class ServiceFacade {
-	public static function instance() : ServiceInterface
+	public static function instance()
 	{
-		$className = strtolower(static::class);
+		$service = strtolower(
+			(new \ReflectionClass(static::class))->getShortName()
+		);
 
-		return \TaskFiber\Fiber::service($className);
+		if ( \TaskFiber\Fiber::hasService( $service ) )
+			return \TaskFiber\Fiber::getService($service);
+
+		throw SorryInvalidService::name($service);
 	}
 
 	public static function __callStatic( string $method, array $parameters )
 	{
-		return call_user_method_array([self::instance(), $method], $parameters );
+		return self::instance()->$method(...$parameters);
+		//call_user_func_array([self::instance(), $method], $parameters );
 	}
 }

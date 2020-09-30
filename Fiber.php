@@ -1,6 +1,7 @@
 <?php
 namespace TaskFiber;
-
+use TaskFiber\Core\FiberContainer;
+use TaskFiber\Core\SorryInvalidFiber;
 
 /**
  * Holds the singleton for the main Thread
@@ -41,6 +42,9 @@ class Fiber {
 	 */
 	public static function __callStatic( string $method, array $arguments )
 	{
+		if ( ! method_exists(self::instance(), $method) )
+			throw SorryInvalidFiber::method(static::class, $method);
+
 		return call_user_func_array([self::instance(), $method], $arguments);
 	}
 

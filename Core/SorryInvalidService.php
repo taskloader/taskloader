@@ -1,10 +1,8 @@
 <?php namespace TaskFiber\Core;
 
-use \TaskFiber\FiberException;
+class SorryInvalidService extends SorryInvalidFiber {
 
-class ServiceException extends FiberException {
-
-   public static function invalidService( $service, $code = 0, \Exception $previous = null ) {
+   public static function name( $service, $code = 0, \Exception $previous = null ) {
       $message = sprintf(
          'Service %s does not exist.',
          $service

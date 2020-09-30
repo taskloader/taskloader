@@ -3,16 +3,19 @@
 use \TaskFiber\FiberException as Exception;
 use \ReflectionClass, \ReflectionParameter;
 
-class ResolveContainer {
-	private array $resolve = [];
+class ResolveContainer extends ContainerProvider {
 
-
-	public function register( string $class, string $newClass )
+	public function addClass( string $class, string $newClass ) : void
 	{
-		$this->resolve[$class] = $newClass;
+		$this->add($class, $newClass);
 	}
 
-	public function resolve( string $class )
+
+	protected function process( $class ) {
+		return $this->getInstance( $class );
+	}
+
+	public function getInstance( string $class ) : object
 	{
 		// Check if we need to resolve a different class
 		$this->resolveClass($class);
@@ -34,7 +37,7 @@ class ResolveContainer {
 		return $reflector->newInstanceArgs( $dependencies );
 	}
 
-	protected function getDependencies( array $parameters )
+	protected function getDependencies( array $parameters ) : array
 	{
 		$dependencies = array();
 
@@ -51,10 +54,10 @@ class ResolveContainer {
 		return $dependencies;
 	}
 
-	protected function resolveClass( string &$class )
+	protected function resolveClass( string &$class ) : void
 	{
-		if ( array_key_exists($class, $this->resolve) )
-			$class = $this->resolve[$class];
+		if ( $this->has($class) )
+			$class = $this->get($class);
 	}
 
 	protected function resolveScalar( ReflectionParameter $parameter )

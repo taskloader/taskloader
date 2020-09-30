@@ -16,17 +16,31 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
 class_alias('TaskFiber\Fiber', 'Fiber');
-Fiber::alias('Core\ServiceProvider', 'Service');
-Fiber::alias('Core\ServiceFacade', 'Facade');
+
+// compile from file later
+class_alias('TaskFiber\Core\ServiceFacade', 'Facade');
+class_alias('TaskFiber\Facade\Service', 'Service');
+class_alias('TaskFiber\Facade\Config', 'Config');
+class_alias('TaskFiber\Facade\Resolve', 'Resolve');
 
 //Fiber::init();
-Fiber::bind('config', 'Config');
-Fiber::bind('router', 'Router');
-Fiber::bind('session', 'Session');
-Fiber::bind('auth', 'Authenticate');
-Fiber::attach('query', 'Query');
+Fiber::addService('config', 'ConfigProvider');
+//Fiber::addService('router', 'RouterProvider');
+//Fiber::addService('session', 'SessionProvider');
+//Fiber::addService('authenticate', 'Authenticate');
+//Fiber::addService('query', 'QueryFactory');
 
+Fiber::service('resolve')->add('ConfigProvider', 'MyConfig');
 
-Fiber::resolve('Config', 'TemporaryConfig');
-Fiber::resolve('Query', 'ServiceClass');
-Fiber::resolve('Injectable', 'Override');
+class MyConfig {
+	function test()
+	{
+		echo "Hello World";
+	}
+}
+
+$config = Fiber::service('config');
+$config->test();
+
+$config = Config::instance();
+$config->test();
