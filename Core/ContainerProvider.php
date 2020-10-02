@@ -12,11 +12,14 @@ abstract class ContainerProvider implements ContainerInterface {
 		if ( is_null($value) )
 			return $this->get($key);
 
-		$this->add($key, $value);
+		$this->set($key, $value);
 	}
 
 	final public function get( string $name )
 	{
+		if ( ! $this->has($name) )
+			throw SorryInvalidContainer::value($name);
+
 		return $this->process(
 			$this->allocate[$name]
 		);
@@ -27,7 +30,7 @@ abstract class ContainerProvider implements ContainerInterface {
 		return array_key_exists($name, $this->allocate);
 	}
 
-	final public function add( string $name, $value ) : void
+	final public function set( string $name, $value ) : void
 	{
 		if ( ! $this->isValid($value) )
 			throw SorryInvalidContainer::parameter();
