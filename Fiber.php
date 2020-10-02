@@ -1,6 +1,5 @@
 <?php
 namespace TaskFiber;
-use TaskFiber\Core\FiberContainer;
 use TaskFiber\Core\SorryInvalidFiber;
 
 /**
@@ -23,10 +22,10 @@ class Fiber {
 	 *
 	 * @return     Thread  The core of the application
 	 */
-	public static function instance() : FiberContainer
+	public static function instance() : TaskFiber
 	{
 		if ( ! self::$instance )
-			self::$instance = new FiberContainer();
+			self::$instance = new TaskFiber(__DIR__);
 
 		return self::$instance;
 	}

@@ -1,16 +1,29 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskFiber;
+use TaskFiber\Core\ContainerInterface;
+use TaskFiber\Core\ServiceContainer;
+use TaskFiber\Core\ResolveContainer;
 
-class FiberContainer implements ContainerInterface {
+class TaskFiber implements ContainerInterface {
 	private ServiceContainer $service;
+	private string $baseDir;
 
 
 
 	/**
 	 * Constructs a new instance.
 	 */
-	public function __construct()
+	public function __construct( string $path )
 	{
-		$this->service = new ServiceContainer();
+		$this->baseDir = realpath($path);
+
+		if ( is_null($this->baseDir) )
+			throw SorryInvalidFiber::path($this->baseDir);
+
+
+
+		$this->service = new ServiceContainer($this,
+			new ResolveContainer($this)
+		);
 	}
 
 
@@ -46,19 +59,25 @@ class FiberContainer implements ContainerInterface {
 	}
 
 
+	public function __get( string $variable ) : object
+	{
+		return $this->service->get($variable);
+	}
+
+
 
 	/**
 	 * Adds a service.
 	 */
 	public function addService() : void
 	{
-		$this->service->add(...func_get_args());
+		$this->service->set(...func_get_args());
 	}
 
 	/**
 	 * Alias to addService
 	 */
-	public function add( string $name, $class) : void
+	public function set( string $name, $class) : void
 	{
 		$this->addService( $name, $class);
 	}
