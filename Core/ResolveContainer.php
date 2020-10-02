@@ -1,29 +1,57 @@
 <?php namespace TaskFiber\Core;
 
-use \TaskFiber\FiberException as Exception;
+use TaskFiber\TaskFiber;
 use \ReflectionClass, \ReflectionParameter;
 
-class ResolveContainer extends ContainerProvider {
+class ResolveContainer {
+	private array $allocate = [];
+	protected TaskFiber $fiber;
+
+	public function __construct( TaskFiber $fiber )
+	{
+		$this->fiber = $fiber;
+	}
+
+	public function __invoke( string $key = null, string $value = null )
+	{
+		if ( is_null($key) )
+			return $this;
+
+		if ( is_null($value) )
+			return $this->get($key);
+
+		$this->add($key, $value);
+	}
+
+	public function get( string $name )
+	{
+		return $this->getInstance( $name );
+	}
+
+	public function has( string $name ) : bool
+	{
+		return array_key_exists($name, $this->allocate);
+	}
+
+	public function set( string $name, string $value ) : void
+	{
+		$this->allocate[$name] = $value;
+	}
 
 	public function addClass( string $class, string $newClass ) : void
 	{
-		$this->add($class, $newClass);
-	}
-
-
-	protected function process( $class ) {
-		return $this->getInstance( $class );
+		$this->set($class, $newClass);
 	}
 
 	public function getInstance( string $class ) : object
-	{
+	{var_dump($class);
 		// Check if we need to resolve a different class
 		$this->resolveClass($class);
 
 		$reflector = new ReflectionClass( $class );
 
 		if ( ! $reflector->isInstantiable() )
-			throw Exception::badMethodCall("$class is not instantiable");
+			throw SorryInvalidContainer::call(static::class, $class);
 		
 
 		$constructor = $reflector->getConstructor();
@@ -45,10 +73,13 @@ class ResolveContainer extends ContainerProvider {
 			$dependency = $parameter->getClass();
 
 			if ( is_null($dependency) )
-				$dependencies[] = $this->resolveScalar();
+				$dependencies[] = $this->resolveScalar($parameter);
+
+			elseif ( $this->fiber->service->contains($dependency->name) )
+				$dependencies[] = $this->fiber->service->from($dependency->name);
 
 			else
-				$dependencies[] = $this->resolve( $dependency->name );
+				$dependencies[] = $this->get( $dependency->name );
 		}
 
 		return $dependencies;
@@ -57,7 +88,7 @@ class ResolveContainer extends ContainerProvider {
 	protected function resolveClass( string &$class ) : void
 	{
 		if ( $this->has($class) )
-			$class = $this->get($class);
+			$class = $this->allocate[$class];
 	}
 
 	protected function resolveScalar( ReflectionParameter $parameter )
@@ -66,6 +97,6 @@ class ResolveContainer extends ContainerProvider {
 		if ( $parameter->isDefaultValueAvailable() )
 			return $parameter->getDefaultValue();
 
-		throw Exception::invalidArgumentException("Could not resolve default value");
+		throw new \InvalidArgumentException("Could not resolve default value for ".$parameter);
 	}
 }
