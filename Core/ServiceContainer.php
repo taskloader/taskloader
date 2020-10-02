@@ -1,14 +1,19 @@
 <?php namespace TaskFiber\Core;
+use TaskFiber\TaskFiber;
 
 
 
 class ServiceContainer implements ContainerInterface {
-	private array $services = [];
+	private array $classes = [];
+	private array $instances = [];
+	protected TaskFiber $fiber;
 
-	public function __construct()
+	public function __construct( TaskFiber $fiber, ResolveContainer $resolve )
 	{
-		$this->services['service'] = $this;
-		$this->services['resolve'] = new ResolveContainer($this);
+		$this->fiber = $fiber;
+		$this->store('fiber', TaskFiber::class, $fiber);
+		$this->store('service', ServiceContainer::class, $this);
+		$this->store('resolve', ResolveContainer::class, $resolve);
 	}
 
 
@@ -22,13 +27,13 @@ class ServiceContainer implements ContainerInterface {
 	 */
 	public function addService( string $name, string $class ) : void
 	{
-		$this->services[$name] = $class;
+		$this->classes[$name] = $class;
 	}
 
 	/**
 	 * Alias to addService
 	 */
-	public function add( string $name, $value )
+	public function set( string $name, $value )
 	{
 		return $this->addService(...func_get_args());
 	}
@@ -45,12 +50,11 @@ class ServiceContainer implements ContainerInterface {
 		if ( ! $this->has($service) )
 			throw SorryInvalidService::name($service);
 
-		$service = &$this->services[$service];
 
-		if ( gettype($service) == 'string' )
-			$service = $this->get('resolve')->get($service);
+		if ( ! array_key_exists($service, $this->instances) )
+			$this->instances[$service] = $this->get('resolve')->get($this->classes[$service]);
 
-		return $service;
+		return $this->instances[$service];
 	}
 
 	/**
@@ -72,7 +76,7 @@ class ServiceContainer implements ContainerInterface {
 	 */
 	public function hasService( string $service ) : bool
 	{
-		return array_key_exists($service, $this->services);
+		return array_key_exists($service, $this->classes);
 	}
 
 	/**
@@ -85,6 +89,28 @@ class ServiceContainer implements ContainerInterface {
 	public function has( string $name ) : bool
 	{
 		return $this->hasService(...func_get_args());
+	}
+
+
+	private function store( string $name, string $class, object $instance ) : void
+	{
+			$this->instances[$name] = $instance;
+			$this->classes[$name] = $class;
+	}
+
+	public function contains( string $class ) : bool
+	{
+		return in_array($class, $this->classes);
+	}
+
+	public function getKey( string $class ) : string
+	{
+		return array_search($class, $this->classes);
+	}
+
+	public function from( string $class ) : object
+	{
+		return $this->instances[$this->getKey($class)];
 	}
 
 
