@@ -3,7 +3,7 @@
 use TaskFiber\TaskFiber;
 use \ReflectionClass, \ReflectionParameter;
 
-class ResolveContainer {
+class ResolveContainer implements ContainerInterface {
 	private array $allocate = [];
 	protected TaskFiber $fiber;
 
@@ -33,7 +33,7 @@ class ResolveContainer {
 		return array_key_exists($name, $this->allocate);
 	}
 
-	public function set( string $name, string $value ) : void
+	public function set( string $name, $value ) : void
 	{
 		$this->allocate[$name] = $value;
 	}
@@ -44,7 +44,7 @@ class ResolveContainer {
 	}
 
 	public function getInstance( string $class ) : object
-	{var_dump($class);
+	{
 		// Check if we need to resolve a different class
 		$this->resolveClass($class);
 

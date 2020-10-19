@@ -1,8 +1,18 @@
 <?php namespace TaskFiber\Core;
-
+use TaskFiber\TaskFiber;
 
 abstract class ContainerProvider implements ContainerInterface {
-	private array $allocate = [];
+	protected TaskFiber $fiber;
+	protected array $allocate = [];
+
+	use \TaskFiber\Feature\requireFile;
+
+
+	final public function __construct( TaskFiber $fiber )
+	{
+		$this->fiber = $fiber;
+	}
+
 
 	final public function __invoke( string $key = null, string $value = null )
 	{
@@ -15,39 +25,27 @@ abstract class ContainerProvider implements ContainerInterface {
 		$this->set($key, $value);
 	}
 
-	final public function get( string $name )
-	{
-		if ( ! $this->has($name) )
-			throw SorryInvalidContainer::value($name);
 
-		return $this->process(
-			$this->allocate[$name]
-		);
+	public function get( string $key )
+	{
+		return $this->allocate[$key];
 	}
 
-	final public function has( string $name ) : bool
+	public function set( string $key, $value) : void
 	{
-		return array_key_exists($name, $this->allocate);
+		$this->allocate[$key] = $value;
 	}
 
-	final public function set( string $name, $value ) : void
-	{
-		if ( ! $this->isValid($value) )
-			throw SorryInvalidContainer::parameter();
 
-		$this->validate($value);
-		$this->allocate[$name] = $value;
+	public function has( string $key ) : bool
+	{
+		return array_key_exists($key, $this->allocate);
 	}
 
-	protected function validate( &$value) : void {}
-
-	protected function isValid( $value ) : bool
+	public function loadConfig( string $name ) : void
 	{
-		return true;
+		$this->requireFile($this->fiber->base().'defaults/'.$name.'.php');
+		$this->requireFile($this->fiber->base().'app/'.$name.'.php');
 	}
 
-	protected function process( $value )
-	{
-		return $value;
-	}
 }
