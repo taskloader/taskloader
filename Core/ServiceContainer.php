@@ -115,7 +115,7 @@ class ServiceContainer implements ContainerInterface {
 
 	public function from( string $class ) : object
 	{
-		return $this->instances[$this->getKey($class)];
+		return $this->get($this->getKey($class));
 	}
 
 	public function loadConfig( string $name ) : void
