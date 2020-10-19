@@ -218,31 +218,3 @@ class TaskFiber implements ContainerInterface {
 	}
 
 }
-
-final class Environment {
-
-	public function getVar( string $variable )
-	{
-		return $this->fiber->config($variable);
-	}
-
-	public function databaseHostname()
-	{
-		return $this->getVar('DATABASE_HOST');
-	}
-
-	public function databasePassword()
-	{
-		return $this->getVar('DATABASE_PASS');
-	}
-
-	public function databaseUsername()
-	{
-		return $this->getVar('DATABASE_USER');
-	}
-
-	public function databaseType()
-	{
-		return $this->getVar('DATABASE_TYPE');
-	}
-}
