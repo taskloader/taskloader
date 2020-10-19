@@ -10,4 +10,13 @@ class SorryInvalidRoute extends SorryInvalidFiber {
  
       return new static( $message, $code, $previous );
    }
+
+   public static function requestMethod( $method, $code = 0, \Exception $previous = null ) {
+      $message = sprintf(
+         'Method %s not registered.',
+         $method
+      );
+ 
+      return new static( $message, $code, $previous );
+   }
 }

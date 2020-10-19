@@ -69,4 +69,6 @@ if ( Fiber::feature('facades') ) {
 
 Fiber::load();
 
-echo \TaskFiber\Environment::databaseHostname();
+Fiber::get('router')->get('/', function () {
+	echo "Home";
+});
