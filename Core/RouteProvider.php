@@ -6,11 +6,11 @@ class RouteProvider implements RouteInterface {
 	private string $name;
 	private string $route;
 	private \Closure $handler;
-	private RouterProvider $router;
+	private RouteContainer $router;
 	private ?string $middleware = null;
 
 	
-	public function __construct( string $route, \Closure $handler, RouterProvider $router )
+	public function __construct( string $route, \Closure $handler, RouteContainer $router )
 	{
 		$this->name = '';
 		$this->route = $route;

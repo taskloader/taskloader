@@ -2,7 +2,7 @@
 
 class SorryInvalidRoute extends SorryInvalidFiber {
 
-   public static function name( $route, $code = 0, \Exception $previous = null ) {
+   public static function name( string $route, $code = 0, \Exception $previous = null ) {
       $message = sprintf(
          'Route %s does not exist.',
          $route
@@ -11,10 +11,19 @@ class SorryInvalidRoute extends SorryInvalidFiber {
       return new static( $message, $code, $previous );
    }
 
-   public static function requestMethod( $method, $code = 0, \Exception $previous = null ) {
+   public static function requestMethod( string $method, $code = 0, \Exception $previous = null ) {
       $message = sprintf(
          'Method %s not registered.',
          $method
+      );
+ 
+      return new static( $message, $code, $previous );
+   }
+
+   public static function notFound( string $route, $code = 0, \Exception $previous = null ) {
+      $message = sprintf(
+         'No route %s found.',
+         $route
       );
  
       return new static( $message, $code, $previous );
