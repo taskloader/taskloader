@@ -7,9 +7,9 @@ use TaskFiber\TaskFiber;
 /**
  * This class describes a router provider.
  */
-class RouterProvider {
+class RouteContainer {
 	private TaskFiber $fiber;
-	private RequestProvider $request;
+	private RequestContainer $request;
 
 	private array $routeNames = [];
 	private array $routeGroups = [];
@@ -33,12 +33,12 @@ class RouterProvider {
 	/**
 	 * Constructs a new instance.
 	 *
-	 * @param      iRequest  $request  The request
+	 * @param      \TaskFiber\TaskFiber  $fiber  The fiber
 	 */
-	public function __construct( TaskFiber $fiber, RequestProvider $request )
+	public function __construct( TaskFiber $fiber )
 	{
 		$this->fiber = $fiber;
-		$this->request = $request;
+		$this->request = $fiber->request;
 
 		foreach ( $this->supportedMethods  as $method )
 			$this->{$method} = array();
@@ -114,7 +114,143 @@ class RouterProvider {
 	}
 
 
+	/**
+	 * Sotre domain route
+	 *
+	 * @param      string    $route    The route
+	 * @param      \Closure  $handler  The handler
+	 *
+	 * @return     <type>    ( description_of_the_return_value )
+	 */
+	public function domain( string $route, \Closure $handler )
+	{
+		return $this->store('domain', $route, $handler);
+	}
 
+
+	/**
+	 * Store a route group
+	 *
+	 * @param      \Closure  $handler  The handler
+	 *
+	 * @return     <type>    ( description_of_the_return_value )
+	 */
+	public function group( \Closure $handler )
+	{
+		return $this->store('group', (string) count($this->routeGroups), function() use ($handler) {
+			$handler->call($this->parameters);
+		});
+	}
+
+
+	/**
+	 * Store prefixed route group
+	 *
+	 * @param      string    $route    The route
+	 * @param      \Closure  $handler  The handler
+	 *
+	 * @return     <type>    ( description_of_the_return_value )
+	 */
+	public function prefix( string $route, \Closure $handler )
+	{
+		return $this->store('group', "$route/(.*)", function() use ($route, $handler) {
+			$this->loadPrefixRoute($route, $handler); // Save to run it later
+		});
+	}
+
+
+
+	/**
+	 * Loads a prefix route.
+	 *
+	 * @param      string    $prefix   The prefix
+	 * @param      \Closure  $handler  The handler
+	 */
+	private function loadPrefixRoute( string $prefix, \Closure $handler )
+	{
+		$this->routePrefix = $prefix;
+
+		$handler->call($this); // Extract route handler
+
+		$this->routePrefix = '';
+	}
+
+
+
+	/**
+	 * Load view from route
+	 *
+	 * @param      string  $route  The route
+	 * @param      string  $view   The view
+	 *
+	 * @return     <type>  ( description_of_the_return_value )
+	 */
+	public function view( string $route, string $view )
+	{
+		return $this->store('get', $route, function() use($view) {
+			return $this->fiber->get('view')->view($view, $this->parameters);
+		});
+	}
+
+
+
+	/**
+	 * Loads controler from route
+	 *
+	 * @param      string    $route       The route
+	 * @param      $|string  $controller  The controller
+	 */
+	public function controller( string $route, string $controller )
+	{
+		$reflection  = new \ReflectionClass($controller);
+
+		foreach( $this->supportedMethods as $method ) {
+
+			if ( $reflection->hasMethod( $method) ) {
+				$method = strtolower($method);
+
+				$this->store($method, $route, function() use( $controller )
+				{
+					$controller = new $controller();
+					$method = strtolower($this->request->requestMethod);
+
+					$controller->{$method}(...$this->parameters);
+				});
+			}
+		}
+	}
+
+
+
+	/**
+	 * Adds a named route.
+	 *
+	 * @param      string          $name   The name
+	 * @param      RouteInterface  $route  The route
+	 */
+	public function addNamedRoute( string $name, RouteInterface $route )
+	{
+		$this->namedRoutes[$name] = $route;
+	}
+
+
+
+	/**
+	 * Add new filter pattern
+	 *
+	 * @param      string  $name     The name
+	 * @param      string  $pattern  The pattern
+	 */
+	public function pattern( string $name, string $pattern )
+	{
+		$this->filers[":$name"] = $pattern;
+	}
+
+
+
+	/**
+	 * Resolve routes
+	 */
 	private function resolve() : void
 	{
 		$method = strtolower($this->request->requestMethod);
@@ -173,6 +309,7 @@ class RouterProvider {
 		foreach( $routes as $routeUri => $routeItem ) {
 			if( preg_match('#^/?'.$routeUri.'/?$#', $route, $this->parameters)) {
 				array_shift($this->parameters);
+				
 				// Fail when route explicitly returns false
 				if( $routeItem->call( $this->parameters ) === false )
 					return false;
@@ -185,6 +322,7 @@ class RouterProvider {
 	}
 
 
+
 	/**
 	 * Displays 404 page
 	 */
@@ -193,7 +331,7 @@ class RouterProvider {
 		if ( property_exists($this, 'get') and array_key_exists('error404', $this->get) )
 			$this->get['error404']->call();
 
-		else throw SorryInvalidRoute::routeNotFound( $this->request );
+		else throw SorryInvalidRoute::notFound( $this->request->requestUri );
 	}
 
 

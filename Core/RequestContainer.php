@@ -3,7 +3,7 @@
 namespace TaskFiber\Core;
 
 
-class RequestProvider implements RequestInterface {
+class RequestContainer implements RequestInterface {
 
 	public function __construct() {
 		$this->importServerVars();
