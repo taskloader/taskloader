@@ -161,6 +161,23 @@ class TaskFiber implements ContainerInterface {
 
 	public function load()
 	{
+		try {
+			$this->_load();
+		}
+		catch( SorryInvalidRoute $e ) {
+			Errorpage::create($e)->get404();
+		}
+		catch( FrameworkException $e ) {
+			Errorpage::create($e)->get500();
+		}
+		catch( Exception $e ) {
+			Errorpage::create($e)->get500();
+		}
+	}
+
+
+	private function _load()
+	{
 		if ( $this->ready ) // call me once!
 			throw SorryInvalidFiber::call(static::class, 'load');
 
