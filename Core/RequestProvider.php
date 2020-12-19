@@ -3,7 +3,7 @@
 namespace TaskFiber\Core;
 
 
-class RequestContainer implements RequestInterface {
+class RequestProvider implements RequestInterface {
 
 	public function __construct() {
 		$this->importServerVars();
@@ -11,7 +11,7 @@ class RequestContainer implements RequestInterface {
 	}
 
 
-	
+
 	/**
 	 * Import variables from $_SERVER
 	 */
@@ -39,7 +39,7 @@ class RequestContainer implements RequestInterface {
 	{
 		if ( ! $this->requestMethod == 'POST' )
 			return;
-		
+
 
 		if ( ! array_key_exists('_method', $_POST) )
 			return;
@@ -87,7 +87,7 @@ class RequestContainer implements RequestInterface {
 			case 'POST':
 				return filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
 
-			
+
 			default:
 				Exception::invalidMethod( $this->requestMethod  );
 			break;
