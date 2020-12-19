@@ -1,7 +1,7 @@
 <?php
 namespace TaskFiber\Feature;
 
-trait requireFile {
+trait loadFile {
 
 	/**
 	 * Inject a file into the instance
@@ -10,7 +10,7 @@ trait requireFile {
 	 *
 	 * @return     boolean  File found
 	 */
-	protected function requireFile( string $file ) : bool
+	protected function loadFile( string $file ) : bool
 	{
 		if ( file_exists( $file ) ) {
 			require $file;

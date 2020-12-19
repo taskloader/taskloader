@@ -2,12 +2,12 @@
 
 
 trait loadConfig {
-  use requireFile;
+  use loadFile;
 
-  
+
   public function loadConfig( string $name ) : void
   {
-    $this->requireFile($this->fiber->base().'defaults/'.$name.'.php');
-    $this->requireFile($this->fiber->base().'app/'.$name.'.php');
+    $this->loadFile($this->fiber->base().'defaults/'.$name.'.php');
+    $this->loadFile($this->fiber->base().'app/'.$name.'.php');
   }
 }
