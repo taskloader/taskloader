@@ -8,7 +8,7 @@ class ServiceContainer implements ContainerInterface {
 	private array $instances = [];
 	protected TaskFiber $fiber;
 
-	use \TaskFiber\Feature\requireFile;
+	use \TaskFiber\Feature\loadConfig;
 
 	public function __construct( TaskFiber $fiber, ResolveContainer $resolve )
 	{
@@ -17,8 +17,9 @@ class ServiceContainer implements ContainerInterface {
 		$this->store('service', ServiceContainer::class, $this);
 		$this->store('resolve', ResolveContainer::class, $resolve);
 
-		$this->requireFile( $this->fiber->path('app/service.php') );
-		$this->requireFile( $this->fiber->path('defaults/service.php') );
+		//$this->requireFile( $this->fiber->path('app/service.php') );
+		//$this->requireFile( $this->fiber->path('defaults/service.php') );
+		$this->loadConfig('service');
 	}
 
 
@@ -116,12 +117,6 @@ class ServiceContainer implements ContainerInterface {
 	public function from( string $class ) : object
 	{
 		return $this->get($this->getKey($class));
-	}
-
-	public function loadConfig( string $name ) : void
-	{
-		$this->requireFile($this->fiber->base().'defaults/'.$name.'.php');
-		$this->requireFile($this->fiber->base().'app/'.$name.'.php');
 	}
 
 

@@ -29,6 +29,9 @@ class RouteContainer {
 	];
 
 
+	use \TaskFiber\Feature\loadConfig;
+
+
 
 	/**
 	 * Constructs a new instance.
@@ -42,6 +45,8 @@ class RouteContainer {
 
 		foreach ( $this->supportedMethods  as $method )
 			$this->{$method} = array();
+
+		$this->loadConfig('router');
 	}
 
 

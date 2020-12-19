@@ -5,7 +5,8 @@ abstract class ContainerProvider implements ContainerInterface {
 	protected TaskFiber $fiber;
 	protected array $allocate = [];
 
-	use \TaskFiber\Feature\requireFile;
+	//use \TaskFiber\Feature\requireFile;
+	use \TaskFiber\Feature\loadConfig;
 
 
 	final public function __construct( TaskFiber $fiber )
