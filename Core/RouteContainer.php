@@ -9,7 +9,7 @@ use TaskFiber\TaskFiber;
  */
 class RouteContainer {
 	private TaskFiber $fiber;
-	private RequestContainer $request;
+	private RequestProvider $request;
 
 	private array $routeNames = [];
 	private array $routeGroups = [];
@@ -309,7 +309,7 @@ class RouteContainer {
 		foreach( $routes as $routeUri => $routeItem ) {
 			if( preg_match('#^/?'.$routeUri.'/?$#', $route, $this->parameters)) {
 				array_shift($this->parameters);
-				
+
 				// Fail when route explicitly returns false
 				if( $routeItem->call( $this->parameters ) === false )
 					return false;
