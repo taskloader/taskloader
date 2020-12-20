@@ -70,7 +70,6 @@ class ResolveContainer implements ContainerInterface {
 		$dependencies = array();
 
 		foreach( $parameters as $parameter ) {
-			//$dependency = $parameter->getClass();
 			$dependency = $parameter->getType() && ! $parameter->getType()->isBuiltin()
 				? new ReflectionClass($parameter->getType()->getName())
 				: null;

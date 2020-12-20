@@ -43,10 +43,4 @@ abstract class ContainerProvider implements ContainerInterface {
 		return array_key_exists($key, $this->allocate);
 	}
 
-	public function loadConfig( string $name ) : void
-	{
-		$this->requireFile($this->fiber->base().'defaults/'.$name.'.php');
-		$this->requireFile($this->fiber->base().'app/'.$name.'.php');
-	}
-
 }

@@ -16,10 +16,6 @@ class ServiceContainer implements ContainerInterface {
 		$this->store('fiber', TaskFiber::class, $fiber);
 		$this->store('service', ServiceContainer::class, $this);
 		$this->store('resolve', ResolveContainer::class, $resolve);
-
-		//$this->requireFile( $this->fiber->path('app/service.php') );
-		//$this->requireFile( $this->fiber->path('defaults/service.php') );
-		$this->loadConfig('service');
 	}
 
 
@@ -109,14 +105,14 @@ class ServiceContainer implements ContainerInterface {
 		return in_array($class, $this->classes);
 	}
 
-	public function getKey( string $class ) : string
+	public function getClass( string $class ) : string
 	{
 		return array_search($class, $this->classes);
 	}
 
 	public function from( string $class ) : object
 	{
-		return $this->get($this->getKey($class));
+		return $this->get($this->getClass($class));
 	}
 
 

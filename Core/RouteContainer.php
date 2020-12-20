@@ -45,8 +45,6 @@ class RouteContainer {
 
 		foreach ( $this->supportedMethods  as $method )
 			$this->{$method} = array();
-
-		$this->loadConfig('router');
 	}
 
 
@@ -337,16 +335,6 @@ class RouteContainer {
 			$this->get['error404']->call();
 
 		else throw SorryInvalidRoute::notFound( $this->request->requestUri );
-	}
-
-
-
-	/**
-	 * Resolves routes on class destruction
-	 */
-	public function __destruct()
-	{
-		$this->resolve();
 	}
 
 
