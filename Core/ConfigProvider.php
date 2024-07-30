@@ -1,4 +1,4 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskLoader\Core;
 
 
 class ConfigProvider extends ContainerProvider {

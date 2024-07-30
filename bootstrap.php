@@ -14,7 +14,7 @@ error_reporting(E_ALL);
 include 'autoloader.php';
 $autoload = new Autoloader();
 $autoload->addNamespace('Whoops', __DIR__.'/../whoops/src/Whoops');
-$autoload->addNamespace('\TaskFiber', __DIR__);
+$autoload->addNamespace('\TaskLoader', __DIR__);
 $autoload->register();
 
 
@@ -26,35 +26,12 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
 /*
- * 			STARTUP TASKFIBER
+ * 			STARTUP TaskLoader
  */
 
 // Set aliass
-class_alias('TaskFiber\Fiber', 'Fiber');
-
-
-if ( Fiber::feature('aliasses') ) {
-	class_alias('TaskFiber\TaskFiber', 'TaskFiber');
-	class_alias('TaskFiber\Core\ServiceFacade', 'Facade');
-	class_alias('\TaskFiber\Core\ServiceContainer', 'Services');
-	class_alias('\TaskFiber\Core\ContainerProvider', 'Container');
-}
+class_alias('TaskLoader\Task', 'Task');
 
 
 
-// Setup variables
-if ( Fiber::feature('variables') ) {
-	$fiber = Fiber::instance();
-	$service = Fiber::get('service');
-	$router = Fiber::get('router');
-	$config = Fiber::get('config');
-}
-
-if ( Fiber::feature('facades') ) {
-	class_alias('TaskFiber\Facade\Service', 'Service');
-	class_alias('TaskFiber\Facade\Config', 'Config');
-	class_alias('TaskFiber\Facade\Resolve', 'Resolve');
-	class_alias('TaskFiber\Facade\Router', 'Router');
-}
-
-Fiber::load();
+Task::load();

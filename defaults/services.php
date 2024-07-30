@@ -1,5 +1,5 @@
 <?php
-namespace TaskFiber\Core;
+namespace TaskLoader\Core;
 
 $this->addService('config', ConfigProvider::class);
 $this->addService('request', RequestProvider::class);

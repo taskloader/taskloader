@@ -1,4 +1,4 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskLoader\Core;
 
 use ServiceException as Exception;
 use \ReflectionClass, \ReflectionParameter;

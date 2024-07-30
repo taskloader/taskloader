@@ -1,4 +1,4 @@
-<?php namespace TaskFiber\Feature;
+<?php namespace TaskLoader\Feature;
 
 
 trait loadConfig {
@@ -7,7 +7,7 @@ trait loadConfig {
 
   public function loadConfig( string $name ) : void
   {
-    $this->loadFile($this->fiber->base().'defaults/'.$name.'.php');
-    $this->loadFile($this->fiber->base().'app/'.$name.'.php');
+    $this->loadFile($this->task->base().'defaults/'.$name.'.php');
+    $this->loadFile($this->task->base().'../app/'.$name.'.php');
   }
 }

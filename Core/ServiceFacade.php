@@ -1,4 +1,4 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskLoader\Core;
 
 
 abstract class ServiceFacade {
@@ -15,8 +15,8 @@ abstract class ServiceFacade {
 			(new \ReflectionClass(static::class))->getShortName()
 		);
 
-		if ( \TaskFiber\Fiber::hasService( $service ) )
-			return \TaskFiber\Fiber::getService($service);
+		if ( \TaskLoader\Task::hasService( $service ) )
+			return \TaskLoader\Task::getService($service);
 
 		throw SorryInvalidService::name($service);
 	}

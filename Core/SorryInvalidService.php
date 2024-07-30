@@ -1,6 +1,6 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskLoader\Core;
 
-class SorryInvalidService extends SorryInvalidFiber {
+class SorryInvalidService extends SorryInvalidTask {
 
    public static function name( $service, $code = 0, \Exception $previous = null ) {
       $message = sprintf(

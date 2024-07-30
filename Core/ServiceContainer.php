@@ -1,19 +1,19 @@
-<?php namespace TaskFiber\Core;
-use TaskFiber\TaskFiber;
+<?php namespace TaskLoader\Core;
+use TaskLoader\TaskLoader;
 
 
 
 class ServiceContainer implements ContainerInterface {
 	private array $classes = [];
 	private array $instances = [];
-	protected TaskFiber $fiber;
+	protected TaskLoader $task;
 
-	use \TaskFiber\Feature\loadConfig;
+	use \TaskLoader\Feature\loadConfig;
 
-	public function __construct( TaskFiber $fiber, ResolveContainer $resolve )
+	public function __construct( TaskLoader $task, ResolveContainer $resolve )
 	{
-		$this->fiber = $fiber;
-		$this->store('fiber', TaskFiber::class, $fiber);
+		$this->task = $task;
+		$this->store('task', TaskLoader::class, $task);
 		$this->store('service', ServiceContainer::class, $this);
 		$this->store('resolve', ResolveContainer::class, $resolve);
 	}

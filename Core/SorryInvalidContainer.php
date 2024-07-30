@@ -1,6 +1,6 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskLoader\Core;
 
-class SorryInvalidContainer extends SorryInvalidFiber {
+class SorryInvalidContainer extends SorryInvalidTask {
 
    public static function value( $name, $code = 0, \Exception $previous = null ) {
       $message = sprintf(

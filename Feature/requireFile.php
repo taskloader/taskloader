@@ -1,7 +1,7 @@
 <?php
 namespace TaskLoader\Feature;
 
-trait loadFile {
+trait requireFile {
 
 	/**
 	 * Inject a file into the instance
@@ -10,13 +10,8 @@ trait loadFile {
 	 *
 	 * @return     boolean  File found
 	 */
-	protected function loadFile( string $file ) : bool
+	protected function requireFile( string $file ) : void
 	{
-		if ( file_exists( $file ) ) {
-			require $file;
-			return true;
-		}
-
-		return false;
+		require $file;
 	}
 }

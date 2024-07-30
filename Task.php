@@ -1,11 +1,11 @@
 <?php
-namespace TaskFiber;
-use TaskFiber\Core\SorryInvalidFiber;
+namespace TaskLoader;
+use TaskLoader\Core\SorryInvalidTask;
 
 /**
  * Holds the singleton for the main Thread
  */
-class Fiber {
+class Task {
 	private static $instance;
 
 
@@ -22,10 +22,10 @@ class Fiber {
 	 *
 	 * @return     Thread  The core of the application
 	 */
-	public static function instance() : TaskFiber
+	public static function instance() : TaskLoader
 	{
 		if ( ! self::$instance )
-			self::$instance = new TaskFiber(__DIR__);
+			self::$instance = new TaskLoader(__DIR__);
 
 		return self::$instance;
 	}

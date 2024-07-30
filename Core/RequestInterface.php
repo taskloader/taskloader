@@ -1,5 +1,5 @@
 <?php
-namespace TaskFiber\Core;
+namespace TaskLoader\Core;
 
 
 interface RequestInterface {

@@ -1,15 +1,16 @@
-<?php namespace TaskFiber;
-use TaskFiber\Core\ContainerInterface;
-use TaskFiber\Core\ServiceContainer;
-use TaskFiber\Core\ResolveContainer;
+<?php namespace TaskLoader;
+use TaskLoader\Core\ContainerInterface;
+use TaskLoader\Core\ServiceContainer;
+use TaskLoader\Core\ResolveContainer;
 
-class TaskFiber implements ContainerInterface {
+class TaskLoader implements ContainerInterface {
 	private ServiceContainer $service;
 	private BootstrapProvider $bootstrap;
 	private array $features = [];
 	private string $baseDir;
 	private bool $ready = false;
 
+	use Feature\loadConfig;
 	use Feature\requireFile;
 
 
@@ -24,22 +25,22 @@ class TaskFiber implements ContainerInterface {
 		if ( is_null($this->baseDir) )
 			throw SorryInvalidFiber::path($this->baseDir);
 
-		$this->requireFile('boot.php');
-
 
 		$this->service = new ServiceContainer($this,
 			new ResolveContainer($this)
 		);
 
-		$this->config->loadConfig('config');
+
+		$this->service->loadConfig('services');
 
 		// fiber, config, service ready;
 		$this->_init();
 
 		// << bootstrap.php
 
+		$this->config->loadConfig('config');
+
 		// services loaded, database connected, stacks loaded
-		$this->service->loadConfig('services');
 		// $this->service->get('database')->connect();
 		// $this->service->get('stacks')->load();
 
@@ -179,7 +180,7 @@ class TaskFiber implements ContainerInterface {
 	private function _load()
 	{
 		if ( $this->ready ) // call me once!
-			throw SorryInvalidFiber::call(static::class, 'load');
+			throw SorryInvalidTask::call(static::class, 'load');
 
 
 		$this->_ready();
@@ -208,30 +209,30 @@ class TaskFiber implements ContainerInterface {
 
 	private function _init() : void
 	{
-		$this->requireFile('init.php');
+		$this->requireFile($this->task->base().'defaults/init.php');
 	}
 
 
 	// services loaded, database connected, stacks loaded
 	private function _ready() : void
 	{
-		$this->requireFile('ready.php');
+		$this->loadConfig('ready.php');
 	}
 
 	// template loaded but not output
 	private function _render() : void
 	{
-		$this->requireFile('ready.php');
+		$this->loadConfig('routes.php');
 	}
 
 
 	private function _finished() : void
 	{
-		$this->requireFile('finished.php');
+		$this->loadConfig('finished.php');
 	}
 	private function _failed() : void
 	{
-		$this->requireFile('failed.php');
+		$this->loadConfig('failed.php');
 	}
 
 }

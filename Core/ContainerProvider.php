@@ -1,17 +1,17 @@
-<?php namespace TaskFiber\Core;
-use TaskFiber\TaskFiber;
+<?php namespace TaskLoader\Core;
+use TaskLoader\TaskLoader;
 
 abstract class ContainerProvider implements ContainerInterface {
-	protected TaskFiber $fiber;
+	protected TaskLoader $task;
 	protected array $allocate = [];
 
-	//use \TaskFiber\Feature\requireFile;
-	use \TaskFiber\Feature\loadConfig;
+	//use \TaskLoader\Feature\requireFile;
+	use \TaskLoader\Feature\loadConfig;
 
 
-	final public function __construct( TaskFiber $fiber )
+	final public function __construct( TaskLoader $task )
 	{
-		$this->fiber = $fiber;
+		$this->task = $task;
 	}
 
 

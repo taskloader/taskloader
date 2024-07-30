@@ -1,6 +1,6 @@
 <?php
 
-namespace TaskFiber\Core;
+namespace TaskLoader\Core;
 
 interface RouteInterface {
 	public function name( string $name );

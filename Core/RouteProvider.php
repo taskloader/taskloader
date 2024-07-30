@@ -1,6 +1,6 @@
 <?php
 
-namespace TaskFiber\Core;
+namespace TaskLoader\Core;
 
 class RouteProvider implements RouteInterface {
 	private string $name;
@@ -40,7 +40,7 @@ class RouteProvider implements RouteInterface {
 	{
 		$reflection = new \ReflectionClass($class);
 
-		if ( ! $reflection->implementsInterface('\TaskFiber\Http\iMiddleware') )
+		if ( ! $reflection->implementsInterface('\TaskLoader\Http\iMiddleware') )
 			throw Exception::invalidMiddlewareImplementation($class);
 
 		// if $reflection instance_of middleware ...

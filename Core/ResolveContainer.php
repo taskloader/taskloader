@@ -1,15 +1,15 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskLoader\Core;
 
-use TaskFiber\TaskFiber;
+use TaskLoader\TaskLoader;
 use \ReflectionClass, \ReflectionParameter;
 
 class ResolveContainer implements ContainerInterface {
 	private array $allocate = [];
-	protected TaskFiber $fiber;
+	protected TaskLoader $task;
 
-	public function __construct( TaskFiber $fiber )
+	public function __construct( TaskLoader $task )
 	{
-		$this->fiber = $fiber;
+		$this->task = $task;
 	}
 
 	public function __invoke( string $key = null, string $value = null )
@@ -77,8 +77,8 @@ class ResolveContainer implements ContainerInterface {
 			if ( is_null($dependency) )
 				$dependencies[] = $this->resolveScalar($parameter);
 
-			elseif ( $this->fiber->service->contains($dependency->name) )
-				$dependencies[] = $this->fiber->service->from($dependency->name);
+			elseif ( $this->task->service->contains($dependency->name) )
+				$dependencies[] = $this->task->service->from($dependency->name);
 
 			else
 				$dependencies[] = $this->get( $dependency->name );

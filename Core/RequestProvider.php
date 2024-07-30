@@ -1,6 +1,6 @@
 <?php
 
-namespace TaskFiber\Core;
+namespace TaskLoader\Core;
 
 
 class RequestProvider implements RequestInterface {

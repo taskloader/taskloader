@@ -1,6 +1,6 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskLoader\Core;
 
-class SorryInvalidRoute extends SorryInvalidFiber {
+class SorryInvalidRoute extends SorryInvalidTask {
 
    public static function name( string $route, $code = 0, \Exception $previous = null ) {
       $message = sprintf(

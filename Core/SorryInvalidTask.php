@@ -1,8 +1,8 @@
-<?php namespace TaskFiber\Core;
+<?php namespace TaskLoader\Core;
 
 use Exception;
 
-class SorryInvalidFiber extends Exception {
+class SorryInvalidTask extends Exception {
  
 
 

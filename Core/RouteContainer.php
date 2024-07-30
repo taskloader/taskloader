@@ -1,14 +1,14 @@
 <?php
 declare(strict_types = 1);
-namespace TaskFiber\Core;
-use TaskFiber\TaskFiber;
+namespace TaskLoader\Core;
+use TaskLoader\TaskLoader;
 
 
 /**
  * This class describes a router provider.
  */
 class RouteContainer {
-	private TaskFiber $fiber;
+	private TaskLoader $task;
 	private RequestProvider $request;
 
 	private array $routeNames = [];
@@ -29,19 +29,19 @@ class RouteContainer {
 	];
 
 
-	use \TaskFiber\Feature\loadConfig;
+	use \TaskLoader\Feature\loadConfig;
 
 
 
 	/**
 	 * Constructs a new instance.
 	 *
-	 * @param      \TaskFiber\TaskFiber  $fiber  The fiber
+	 * @param      \TaskLoader\TaskLoader  $task  The taskloader
 	 */
-	public function __construct( TaskFiber $fiber )
+	public function __construct( TaskLoader $task )
 	{
-		$this->fiber = $fiber;
-		$this->request = $fiber->request;
+		$this->task = $task;
+		$this->request = $task->request;
 
 		foreach ( $this->supportedMethods  as $method )
 			$this->{$method} = array();
@@ -191,7 +191,7 @@ class RouteContainer {
 	public function view( string $route, string $view )
 	{
 		return $this->store('get', $route, function() use($view) {
-			return $this->fiber->get('view')->view($view, $this->parameters);
+			return $this->task->get('view')->view($view, $this->parameters);
 		});
 	}
 
