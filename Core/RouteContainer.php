@@ -11,15 +11,24 @@ class RouteContainer {
 	private TaskLoader $task;
 	private RequestProvider $request;
 
+	private array $parameters = [];
+
 	private array $routeNames = [];
 	private array $routeGroups = [];
 	private string $routePrefix = '';
 
 	private array $domainRoutes = [];
+	private array $namedRoutes = [];
 
 	private array $supportedMethods = [
-		'GET', 'POST', 'PUT', 'DELETE'
+		'any', 'get', 'post', 'put', 'delete'
 	];
+
+	private array $any = [];
+	private array $get = [];
+	private array $post = [];
+	private array $put = [];
+	private array $delete = [];
 
 	protected array $filters = [
 		':name' => '([a-zA-Z]+)',
@@ -42,9 +51,6 @@ class RouteContainer {
 	{
 		$this->task = $task;
 		$this->request = $task->request;
-
-		foreach ( $this->supportedMethods  as $method )
-			$this->{$method} = array();
 	}
 
 
@@ -91,7 +97,7 @@ class RouteContainer {
 	protected function supportsMethod( string $methodName ) : bool
 	{
 		return in_array(
-			strtoupper($methodName),
+			strtolower($methodName),
 			$this->supportedMethods
 		);
 	}
@@ -254,7 +260,7 @@ class RouteContainer {
 	/**
 	 * Resolve routes
 	 */
-	private function resolve() : void
+	public function resolve() : void
 	{
 		$method = strtolower($this->request->requestMethod);
 		$domain = $this->request->domain;

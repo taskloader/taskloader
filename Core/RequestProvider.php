@@ -4,6 +4,15 @@ namespace TaskLoader\Core;
 
 
 class RequestProvider implements RequestInterface {
+	public string $documentRoot = '';
+	public string $serverPort = '';
+	public string $serverName = '';
+	public string $requestUri = '';
+	public string $requestMethod = '';
+	public string $httpXRequestWith = '';
+	public string $httpHost = '';
+	public string $domain = '';
+	public bool $ajax = false;
 
 	public function __construct() {
 		$this->importServerVars();
@@ -17,17 +26,17 @@ class RequestProvider implements RequestInterface {
 	 */
 	private function importServerVars() : void
 	{
-		foreach( $_SERVER as $key => $value )
-			$this->{$this->toCamelCase($key)} = $value;
+		foreach( $_SERVER as $key => $value ) {
+			$item = $this->toCamelCase($key);
+			if (property_exists($this, $item)) $this->{$item} = $value;
+		}
+			//$this->{$this->toCamelCase($key)} = $value;
 
 		$this->domain = property_exists($this, 'httpHost') ? $this->httpHost: $this->serverName;
 
 		$this->ajax = (
-			property_exists($this, 'httpXRequestWith') // jQuery
+			! empty($this->httpXRequestWith) // jQuery
 				and strtolower($this->httpXRequestWith) == 'xmlhttprequest'
-		or
-			property_exists($this, 'xRequestWith') // Angular
-				and strtolower($this->xRequestWith) == 'xmlhttprequest'
 		);
 	}
 
