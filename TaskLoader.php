@@ -8,6 +8,7 @@ class TaskLoader implements ContainerInterface {
 	private BootstrapProvider $bootstrap;
 	private array $features = [];
 	private string $baseDir;
+	private string $appDir;
 	private bool $ready = false;
 
 	use Feature\loadConfig;
@@ -21,9 +22,10 @@ class TaskLoader implements ContainerInterface {
 	public function __construct( string $path )
 	{
 		$this->baseDir = realpath($path).\DIRECTORY_SEPARATOR;
+		$this->appDir = realpath($this->baseDir.'../').\DIRECTORY_SEPARATOR;
 
 		if ( is_null($this->baseDir) )
-			throw SorryInvalidFiber::path($this->baseDir);
+			throw SorryInvalidTask::path($this->baseDir);
 
 
 		$this->service = new ServiceContainer($this,
@@ -43,6 +45,7 @@ class TaskLoader implements ContainerInterface {
 		// services loaded, database connected, stacks loaded
 		// $this->service->get('database')->connect();
 		// $this->service->get('stacks')->load();
+
 
 	}
 
@@ -207,6 +210,11 @@ class TaskLoader implements ContainerInterface {
 		return $this->baseDir;
 	}
 
+	public function app() :string
+	{
+		return $this->appDir;
+	}
+
 	private function _init() : void
 	{
 		$this->requireFile($this->task->base().'defaults/init.php');
@@ -216,23 +224,24 @@ class TaskLoader implements ContainerInterface {
 	// services loaded, database connected, stacks loaded
 	private function _ready() : void
 	{
-		$this->loadConfig('ready.php');
+		$this->loadConfig('ready');
 	}
 
 	// template loaded but not output
 	private function _render() : void
 	{
-		$this->loadConfig('routes.php');
+		$this->loadConfig('routes');
+		$this->get('router')->resolve();
 	}
 
 
 	private function _finished() : void
 	{
-		$this->loadConfig('finished.php');
+		$this->loadConfig('finished');
 	}
 	private function _failed() : void
 	{
-		$this->loadConfig('failed.php');
+		$this->loadConfig('failed');
 	}
 
 }
