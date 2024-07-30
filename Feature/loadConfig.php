@@ -7,7 +7,15 @@ trait loadConfig {
 
   public function loadConfig( string $name ) : void
   {
-    $this->loadFile($this->task->base().'defaults/'.$name.'.php');
-    $this->loadFile($this->task->base().'../app/'.$name.'.php');
+    $task = $this->task;
+    $service = $task->service;
+    
+    if ( $task->hasService('router') ) $router = $task->router;
+
+    if ( file_exists($this->task->base().'defaults/'.$name.'.php') )
+      include_once ($this->task->base().'defaults/'.$name.'.php');
+
+    if ( file_exists($this->task->app().$name.'.php') )
+      include_once ($this->task->app().$name.'.php');
   }
 }
