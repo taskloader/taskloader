@@ -1,7 +1,7 @@
 <?php namespace TaskLoader\Core;
 
 class ImmutableArray {
-	private $allocate;
+	private array $allocate = [];
 
 	public function __construct( array $items )
 	{

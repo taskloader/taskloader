@@ -43,4 +43,10 @@ abstract class ContainerProvider implements ContainerInterface {
 		return array_key_exists($key, $this->allocate);
 	}
 
+	
+	public function asArray() : array
+	{
+		return $this->allocate;
+	}
+
 }

@@ -115,5 +115,11 @@ class ServiceContainer implements ContainerInterface {
 		return $this->get($this->getClass($class));
 	}
 
+	
+	public function asArray() : array
+	{
+		return $this->instances;
+	}
+
 
 }

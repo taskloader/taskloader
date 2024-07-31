@@ -86,7 +86,6 @@ class RouteContainer {
 	}
 
 
-
 	/**
 	 * Determines if method is implemented
 	 *
