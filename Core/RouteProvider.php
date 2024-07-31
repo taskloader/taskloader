@@ -40,7 +40,7 @@ class RouteProvider implements RouteInterface {
 	{
 		$reflection = new \ReflectionClass($class);
 
-		if ( ! $reflection->implementsInterface('\TaskLoader\Http\iMiddleware') )
+		if ( ! $reflection->implementsInterface('\TaskLoader\Http\iMiddleware') ) // fix: Core/RouteMiddleware
 			throw Exception::invalidMiddlewareImplementation($class);
 
 		// if $reflection instance_of middleware ...

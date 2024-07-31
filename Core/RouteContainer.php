@@ -21,7 +21,7 @@ class RouteContainer {
 	private array $namedRoutes = [];
 
 	private array $supportedMethods = [
-		'any', 'get', 'post', 'put', 'delete'
+		'get', 'post', 'put', 'delete'
 	];
 
 	private array $any = [];
@@ -98,7 +98,7 @@ class RouteContainer {
 	{
 		return in_array(
 			strtolower($methodName),
-			$this->supportedMethods
+			array_merge($this->supportedMethods, ['any'])
 		);
 	}
 
@@ -112,12 +112,19 @@ class RouteContainer {
 	 */
 	protected function store( string $method, string $route, \Closure $handler ) : RouteInterface
 	{
-		$route = $this->routePrefix.$route;
-		$route = strtr($route, $this->filters);
-		$routerItem = new RouteProvider($route, $handler, $this);
+		// 
+		if ($method == 'any' ) {
+			foreach($this->supportedMethods as $method)
+				$routerItem = $this->store($method, $route, $handler);
+		}
+		else {
+			$route = $this->routePrefix.$route;
+			$route = strtr($route, $this->filters);
+			$routerItem = new RouteProvider($route, $handler, $this);
 
-		// Store the route
-		$this->{$method}[$route] = $routerItem;
+			// Store the route
+			$this->{$method}[$route] = $routerItem;
+		}
 
 		return $routerItem;
 	}
