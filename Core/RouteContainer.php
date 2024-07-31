@@ -259,7 +259,7 @@ class RouteContainer {
 	 */
 	public function pattern( string $name, string $pattern )
 	{
-		$this->filers[":$name"] = $pattern;
+		$this->filters[":$name"] = $pattern;
 	}
 
 

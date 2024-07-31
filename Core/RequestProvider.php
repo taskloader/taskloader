@@ -46,7 +46,7 @@ class RequestProvider implements RequestInterface {
 	 */
 	private function implementCustomMethods() : void
 	{
-		if ( ! $this->requestMethod == 'POST' )
+		if ( ! $this->requestMethod == 'post' )
 			return;
 
 
@@ -89,11 +89,11 @@ class RequestProvider implements RequestInterface {
 	{
 
 		switch ( $this->requestMethod ) {
-			case 'GET':
+			case 'get':
 				return [];
 			break;
 
-			case 'POST':
+			case 'post':
 				return filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
 
 
