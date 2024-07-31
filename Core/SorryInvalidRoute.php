@@ -28,4 +28,13 @@ class SorryInvalidRoute extends SorryInvalidTask {
  
       return new static( $message, $code, $previous );
    }
+
+   public static function middleware( string $route, $code = 0, \Exception $previous = null ) {
+      $message = sprintf(
+         '%s is not a valid middleware.',
+         $route
+      );
+ 
+      return new static( $message, $code, $previous );
+   }
 }
