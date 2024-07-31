@@ -7,7 +7,7 @@ class RouteProvider implements RouteInterface {
 	private string $route;
 	private \Closure $handler;
 	private RouteContainer $router;
-	private ?string $middleware = null;
+	private array $middleware = [];
 
 	
 	public function __construct( string $route, \Closure $handler, RouteContainer $router )
@@ -40,11 +40,12 @@ class RouteProvider implements RouteInterface {
 	{
 		$reflection = new \ReflectionClass($class);
 
-		if ( ! $reflection->implementsInterface('\TaskLoader\Http\iMiddleware') ) // fix: Core/RouteMiddleware
-			throw Exception::invalidMiddlewareImplementation($class);
+		if ( ! $reflection->implementsInterface('\TaskLoader\Core\RouteMiddlewareInterface') )
+			throw SorryInvalidRoute::middleware($class);
 
 		// if $reflection instance_of middleware ...
-		$this->middleware = $class;
+		$this->middleware[] = $class;
+
 
 		return $this;
 	}
@@ -53,12 +54,10 @@ class RouteProvider implements RouteInterface {
 	public function call( array $parameters = [] )
 	{
 
-		if ( $this->middleware ) {
-			$middleware = new $this->middleware( $this );
+		foreach($this->middleware as $middlewareName) {
+			$middleware = new $middlewareName( $this );
 
-			if( ! $middleware->allowed() )
-				return false;
-
+			if ( ! $middleware->allowed() ) return false;
 		}
 
 
