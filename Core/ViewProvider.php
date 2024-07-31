@@ -7,7 +7,7 @@ class ViewProvider extends ContainerProvider
     {
         $file = $this->task->app().'templates/'.$filename.'.php';
 
-        if ( !file_exists($file) ) throw SorryInvalidView::templateNotFound();
+        if ( !file_exists($file) ) throw SorryInvalidView::templateNotFound($filename);
 
         extract($this->task->service->asArray());
         extract($this->allocate);
