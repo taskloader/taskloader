@@ -8,7 +8,7 @@ trait loadConfig {
   public function loadConfig( string $name ) : void
   {
     $task = $this->task;
-    $service = $task->service;
+    extract($this->task->service->asArray());
     
     if ( $task->hasService('router') ) $router = $task->router;
 
