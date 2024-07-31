@@ -107,15 +107,15 @@ class RouteContainer {
 	/**
 	 * Stores route if method is supported
 	 *
-	 * @param      string  $method       The method
-	 * @param      array   $arguments  The arguments
+	 * @param		string  $method     The method
+	 * @param		string	$route		The Route
+	 * @param		Closure $handler	The route handler
 	 */
 	protected function store( string $method, string $route, \Closure $handler ) : RouteInterface
 	{
 		// 
 		if ($method == 'any' ) {
-			foreach($this->supportedMethods as $method)
-				$routerItem = $this->store($method, $route, $handler);
+			$routerItem = $this->storeMany($route, $handler);
 		}
 		else {
 			$route = $this->routePrefix.$route;
@@ -125,6 +125,26 @@ class RouteContainer {
 			// Store the route
 			$this->{$method}[$route] = $routerItem;
 		}
+
+		return $routerItem;
+	}
+
+
+	/**
+	 * Stores all method routes
+	 * 
+	 * @param		string	$route		The Route
+	 * @param		Closure $handler	The route handler
+	 */
+	protected function storeMany( string $route, \Closure $handler ) : RouteInterface
+	{
+		$route = $this->routePrefix.$route;
+		$route = strtr($route, $this->filters);
+		$routerItem = new RouteProvider($route, $handler, $this);
+
+		// Store the route
+		foreach( $this->supportedMethods as $method)
+			$this->{$method}[$route] = $routerItem;
 
 		return $routerItem;
 	}
