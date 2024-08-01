@@ -55,6 +55,14 @@ class TaskLoader implements ContainerInterface {
 	}
 
 
+	public function __call( string $method, array $arguments )
+	{
+		if( ! $this->service->has($method) ) throw SorryInvalidTask::service($method);
+
+		return $this->service->getService($method);
+	}
+
+
 	public function path( string $file ) : string
 	{
 		return $this->baseDir.$file;
@@ -192,6 +200,7 @@ class TaskLoader implements ContainerInterface {
 		// page loaded but not yet output
 		// $this->service->get('router')->render();
 		// $this->service->get('template')->render();
+		// for services as service, service implements RunnableInterface, service->run()
 		$this->_render();
 
 
