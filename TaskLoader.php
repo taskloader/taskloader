@@ -83,11 +83,11 @@ class TaskLoader implements ContainerInterface {
 	 * Alias to getService
 	 *
 	 * @return     object  The service
-	 */
+	 * /
 	public function service() : object
 	{
 		return $this->getService(...func_get_args());
-	}
+	}*/
 
 	/**
 	 * Alias to getService
