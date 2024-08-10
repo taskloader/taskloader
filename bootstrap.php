@@ -47,7 +47,7 @@ if ( Task::feature('variables') ) {
 	/*$service = Task::get('service');
 	$router = Task::get('router');
 	$config = Task::get('config');*/
-    extract($this->task->service->asArray()); // Are they loaded yet?
+    extract($task->service->asArray()); // Are they loaded yet?
 }
 
 if ( Task::feature('facades') ) {
