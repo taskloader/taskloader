@@ -44,7 +44,6 @@ class TaskLoader implements ContainerInterface {
 
 		// services loaded, database connected, stacks loaded
 		// $this->service->get('database')->connect();
-		// $this->service->get('stacks')->load();
 
 
 	}
